@@ -5,11 +5,13 @@ import '../models/camera.dart';
 import '../services/push_service.dart';
 import '../services/supabase_service.dart';
 import '../widgets/camera_card.dart';
+import 'account_screen.dart';
 import 'camera_live_screen.dart';
+import 'dashboard_screen.dart';
 import 'events_screen.dart';
 import 'share_access_screen.dart';
 
-/// Pantalla principal con pestañas: Cámaras y Eventos.
+/// Pantalla principal con pestañas: Inicio, Cámaras, Eventos y Cuenta.
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -21,6 +23,8 @@ class _HomeScreenState extends State<HomeScreen> {
   late final SupabaseService _service =
       SupabaseService(Supabase.instance.client);
   int _index = 0;
+
+  static const _titles = ['Inicio', 'Mis cámaras', 'Eventos', 'Cuenta'];
 
   @override
   void initState() {
@@ -54,31 +58,32 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     final pages = [
+      DashboardScreen(
+        service: _service,
+        onSeeCameras: () => setState(() => _index = 1),
+        onSeeEvents: () => setState(() => _index = 2),
+        onShare: _openShare,
+      ),
       _CamerasTab(service: _service),
       EventsScreen(service: _service),
+      AccountScreen(
+        service: _service,
+        onShare: _openShare,
+        onSignOut: _signOut,
+      ),
     ];
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(_index == 0 ? 'Mis cámaras' : 'Eventos'),
-        actions: [
-          IconButton(
-            tooltip: 'Compartir acceso',
-            onPressed: _openShare,
-            icon: const Icon(Icons.person_add_alt_1),
-          ),
-          IconButton(
-            tooltip: 'Cerrar sesión',
-            onPressed: _signOut,
-            icon: const Icon(Icons.logout),
-          ),
-        ],
-      ),
+      appBar: AppBar(title: Text(_titles[_index])),
       body: IndexedStack(index: _index, children: pages),
       bottomNavigationBar: NavigationBar(
         selectedIndex: _index,
         onDestinationSelected: (i) => setState(() => _index = i),
         destinations: const [
+          NavigationDestination(
+            icon: Icon(Icons.home_rounded),
+            label: 'Inicio',
+          ),
           NavigationDestination(
             icon: Icon(Icons.grid_view_rounded),
             label: 'Cámaras',
@@ -86,6 +91,10 @@ class _HomeScreenState extends State<HomeScreen> {
           NavigationDestination(
             icon: Icon(Icons.notifications_rounded),
             label: 'Eventos',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.person_rounded),
+            label: 'Cuenta',
           ),
         ],
       ),
