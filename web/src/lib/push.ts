@@ -30,11 +30,11 @@ export function pushSupported(): boolean {
 }
 
 /** Convierte la clave VAPID (base64url) al Uint8Array que exige PushManager. */
-function urlBase64ToUint8Array(base64String: string): Uint8Array<ArrayBuffer> {
+function urlBase64ToUint8Array(base64String: string): Uint8Array {
   const padding = "=".repeat((4 - (base64String.length % 4)) % 4);
   const base64 = (base64String + padding).replace(/-/g, "+").replace(/_/g, "/");
   const raw = atob(base64);
-  const output = new Uint8Array(new ArrayBuffer(raw.length));
+  const output = new Uint8Array(raw.length);
   for (let i = 0; i < raw.length; i++) output[i] = raw.charCodeAt(i);
   return output;
 }
@@ -74,7 +74,9 @@ export async function subscribeToPush(): Promise<PushState> {
 
   const sub = await reg.pushManager.subscribe({
     userVisibleOnly: true,
-    applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY),
+    // Cast a BufferSource: evita el choque de tipos ArrayBuffer/SharedArrayBuffer
+    // del genérico Uint8Array<ArrayBufferLike> en TS 5.7+ (independiente de versión).
+    applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY) as BufferSource,
   });
 
   const json = sub.toJSON();
