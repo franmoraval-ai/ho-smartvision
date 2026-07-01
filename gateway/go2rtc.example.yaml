@@ -1,0 +1,9 @@
+# Plantilla de configuración de go2rtc (se regenera automáticamente por el
+# gateway con los streams descubiertos). Útil para arrancar go2rtc la 1ª vez.
+api:
+  listen: ":1984"
+rtsp:
+  listen: ":8554"
+webrtc:
+  listen: ":8555"
+streams: {}

@@ -1,0 +1,12 @@
+# Copia este archivo a `key.properties` (misma carpeta) y rellena con tus datos.
+# NUNCA subas `key.properties` ni el `.jks` al control de versiones.
+#
+# Genera el keystore con:
+#   keytool -genkey -v -keystore upload-keystore.jks -storetype JKS \
+#     -keyalg RSA -keysize 2048 -validity 10000 -alias upload
+#
+# Coloca `upload-keystore.jks` en la carpeta `mobile/android/` y usa storeFile=upload-keystore.jks
+storePassword=CAMBIA_ESTO
+keyPassword=CAMBIA_ESTO
+keyAlias=upload
+storeFile=upload-keystore.jks

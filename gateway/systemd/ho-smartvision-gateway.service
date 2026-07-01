@@ -1,0 +1,17 @@
+[Unit]
+Description=Ho smartvision — Gateway Edge
+After=network-online.target go2rtc.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+# Ajusta el usuario y rutas a tu instalación.
+User=pi
+WorkingDirectory=/opt/ho-smartvision-gateway
+EnvironmentFile=/opt/ho-smartvision-gateway/.env
+ExecStart=/opt/ho-smartvision-gateway/.venv/bin/python /opt/ho-smartvision-gateway/main.py
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

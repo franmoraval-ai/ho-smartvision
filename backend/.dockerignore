@@ -1,0 +1,14 @@
+# Excluye artefactos locales de la imagen Docker del backend.
+.venv/
+venv/
+env/
+__pycache__/
+*.py[cod]
+.env
+.env.*
+!.env.example
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+*.md
+requirements.lock.txt

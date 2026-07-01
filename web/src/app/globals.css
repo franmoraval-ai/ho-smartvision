@@ -1,0 +1,137 @@
+@import "tailwindcss";
+
+/* ============================================================================
+   Ho smartvision — Paleta y tokens (Tailwind v4 con @theme).
+   Estilo vivo y colorido: azul eléctrico + acentos violeta/cian/ámbar.
+   ========================================================================== */
+@theme {
+  /* Base */
+  --color-background: oklch(0.985 0.005 256);
+  --color-foreground: oklch(0.21 0.03 256);
+
+  /* Marca / primario (azul eléctrico) */
+  --color-primary: oklch(0.55 0.2 262);
+  --color-primary-foreground: oklch(0.99 0 0);
+
+  /* Acentos */
+  --color-accent: oklch(0.62 0.21 305); /* violeta */
+  --color-accent-foreground: oklch(0.99 0 0);
+  --color-cyan: oklch(0.72 0.15 210);
+  --color-amber: oklch(0.8 0.16 80);
+
+  /* Neutros */
+  --color-muted: oklch(0.96 0.012 256);
+  --color-muted-foreground: oklch(0.52 0.025 256);
+  --color-border: oklch(0.91 0.012 256);
+  --color-card: oklch(1 0 0);
+
+  /* Estados */
+  --color-success: oklch(0.7 0.17 152);
+  --color-destructive: oklch(0.58 0.22 27);
+
+  --radius: 0.85rem;
+
+  /* Gradiente de marca reutilizable */
+  --gradient-brand: linear-gradient(
+    135deg,
+    oklch(0.55 0.2 262) 0%,
+    oklch(0.6 0.21 300) 50%,
+    oklch(0.68 0.16 215) 100%
+  );
+}
+
+* {
+  border-color: var(--color-border);
+}
+
+body {
+  background-color: var(--color-background);
+  color: var(--color-foreground);
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  /* Fondo sutil con manchas de color para dar vida. */
+  background-image:
+    radial-gradient(
+      40rem 40rem at 110% -10%,
+      oklch(0.6 0.21 300 / 0.1),
+      transparent 60%
+    ),
+    radial-gradient(
+      36rem 36rem at -10% 0%,
+      oklch(0.68 0.16 215 / 0.1),
+      transparent 55%
+    );
+  background-attachment: fixed;
+}
+
+/* --------------------------------------------------------------------------
+   Utilidades de marca
+   -------------------------------------------------------------------------- */
+.bg-brand-gradient {
+  background-image: var(--gradient-brand);
+}
+
+.text-brand-gradient {
+  background-image: var(--gradient-brand);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.card-hover {
+  transition:
+    transform 0.18s ease,
+    box-shadow 0.18s ease,
+    border-color 0.18s ease;
+}
+.card-hover:hover {
+  transform: translateY(-3px);
+  box-shadow:
+    0 12px 28px -12px oklch(0.55 0.2 262 / 0.35),
+    0 4px 10px -6px oklch(0.55 0.2 262 / 0.25);
+  border-color: oklch(0.55 0.2 262 / 0.4);
+}
+
+/* Punto "EN VIVO" con latido */
+.live-dot {
+  position: relative;
+  display: inline-block;
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 9999px;
+  background-color: var(--color-destructive);
+}
+.live-dot::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 9999px;
+  background-color: var(--color-destructive);
+  animation: live-ping 1.4s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+@keyframes live-ping {
+  0% {
+    transform: scale(1);
+    opacity: 0.7;
+  }
+  75%,
+  100% {
+    transform: scale(2.4);
+    opacity: 0;
+  }
+}
+
+/* Aparición suave para listas/tarjetas */
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.animate-in {
+  animation: fade-in-up 0.35s ease both;
+}

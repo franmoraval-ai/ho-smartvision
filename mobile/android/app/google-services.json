@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "274111171913",
+    "project_id": "app-ho-72367",
+    "storage_bucket": "app-ho-72367.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:274111171913:android:8a77054b5ae2f0b81cde98",
+        "android_client_info": {
+          "package_name": "com.hosmartvision.ho_smartvision"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD7ICki7eqhZVxwSQZwiBDzuuMolkDlv1k"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

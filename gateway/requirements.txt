@@ -1,0 +1,11 @@
+# ===== Ho smartvision — Gateway Edge (Raspberry Pi) =====
+# Cliente HTTP
+httpx>=0.28
+
+# Configuración
+python-dotenv>=1.0
+PyYAML>=6.0
+
+# Descubrimiento ONVIF y control de cámaras
+WSDiscovery>=2.1
+onvif-zeep>=0.2.12

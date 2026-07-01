@@ -1,0 +1,26 @@
+# ===== Ho smartvision — Backend FastAPI =====
+# Rangos mínimos compatibles con Python 3.14. Para builds reproducibles usa
+# `requirements.lock.txt` (versiones exactas congeladas con `pip freeze`).
+# Framework
+fastapi>=0.115
+uvicorn[standard]>=0.34
+
+# Configuración y validación
+pydantic>=2.13
+pydantic-settings>=2.7
+email-validator>=2.2
+
+# Supabase (Postgres + Auth + Storage)
+supabase>=2.11
+
+# JWT (verificación de tokens de Supabase) y cifrado de credenciales ONVIF
+PyJWT>=2.10
+cryptography>=44
+
+# Descubrimiento ONVIF (opcional — el endpoint degrada a modo simulado si falta)
+onvif-zeep==0.2.12
+WSDiscovery==2.1.2
+
+# Utilidades
+python-multipart>=0.0.20
+httpx>=0.28
