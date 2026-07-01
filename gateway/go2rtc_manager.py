@@ -21,12 +21,23 @@ from onvif_discovery import DiscoveredCamera
 logger = logging.getLogger("gateway.go2rtc")
 
 
-def build_config(cameras: Iterable[DiscoveredCamera]) -> dict:
-    """Construye el dict de configuración de go2rtc a partir de las cámaras."""
+def build_config(
+    cameras: Iterable[DiscoveredCamera],
+    ip_to_camera: dict[str, str] | None = None,
+) -> dict:
+    """Construye el dict de configuración de go2rtc a partir de las cámaras.
+
+    El nombre de cada stream es el `camera_id` (UUID del backend) cuando la
+    cámara está mapeada por IP, de modo que coincida con lo que piden la app
+    móvil y el panel web (`stream.html?src=<camera_id>`). Si no hay mapeo, se
+    usa el `stream_key` basado en IP como respaldo.
+    """
+    ip_to_camera = ip_to_camera or {}
     streams: dict[str, str] = {}
     for cam in cameras:
         if cam.rtsp_url:
-            streams[cam.stream_key] = cam.rtsp_url
+            key = ip_to_camera.get(cam.ip) or cam.stream_key
+            streams[key] = cam.rtsp_url
 
     return {
         # API local (panel de go2rtc + endpoints REST/WebRTC).
@@ -39,9 +50,13 @@ def build_config(cameras: Iterable[DiscoveredCamera]) -> dict:
     }
 
 
-def write_config(cameras: Iterable[DiscoveredCamera], path: str) -> int:
+def write_config(
+    cameras: Iterable[DiscoveredCamera],
+    path: str,
+    ip_to_camera: dict[str, str] | None = None,
+) -> int:
     """Escribe el go2rtc.yaml. Devuelve el número de streams configurados."""
-    config = build_config(cameras)
+    config = build_config(cameras, ip_to_camera)
     os.makedirs(os.path.dirname(path) or ".", exist_ok=True)
     with open(path, "w", encoding="utf-8") as fh:
         yaml.safe_dump(config, fh, sort_keys=False, allow_unicode=True)

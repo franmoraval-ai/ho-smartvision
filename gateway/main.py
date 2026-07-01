@@ -78,15 +78,18 @@ def run() -> None:
                     settings.onvif_password,
                     timeout=settings.discovery_timeout,
                 )
-                if cameras:
-                    go2rtc_manager.write_config(
-                        cameras, settings.go2rtc_config_path
-                    )
-                    go2rtc_manager.reload(settings.go2rtc_api_url)
 
-                # Refresca el mapa IP→camera_id desde el backend.
+                # Refresca el mapa IP→camera_id desde el backend ANTES de
+                # escribir la config, para nombrar los streams de go2rtc con el
+                # camera_id (UUID) que piden la app y el panel web.
                 backend_cameras = backend.get_cameras(settings.device_id)
                 ip_to_camera = _map_ip_to_camera_id(backend_cameras)
+
+                if cameras:
+                    go2rtc_manager.write_config(
+                        cameras, settings.go2rtc_config_path, ip_to_camera
+                    )
+                    go2rtc_manager.reload(settings.go2rtc_api_url)
 
                 # Emite un evento de estado por cada cámara descubierta y mapeada.
                 for cam in cameras:
