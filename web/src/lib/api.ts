@@ -65,7 +65,27 @@ export interface Camera {
   onvif_ip: string | null;
   onvif_username: string | null;
   is_active: boolean;
+  provider: CameraProviderName;
+  provider_device_serial: string | null;
+  provider_channel: number;
   created_at: string;
+}
+
+export type CameraProviderName =
+  | "local"
+  | "ezviz"
+  | "imou"
+  | "reolink"
+  | "tapo";
+
+export interface CameraStream {
+  camera_id: string;
+  provider: CameraProviderName;
+  url: string;
+  protocol: "hls" | "flv" | "rtmp" | "rtsp";
+  cloud: boolean;
+  browser_playable: boolean;
+  expires_at: string | null;
 }
 
 export interface OnvifDevice {
@@ -116,6 +136,7 @@ export const api = {
       request<Camera[]>(
         `/cameras${propertyId ? `?property_id=${propertyId}` : ""}`,
       ),
+    get: (id: string) => request<Camera>(`/cameras/${id}`),
     create: (body: {
       property_id: string;
       name: string;
@@ -124,11 +145,35 @@ export const api = {
       onvif_username?: string;
       onvif_password?: string;
       gateway_id?: string;
+      provider?: CameraProviderName;
+      provider_device_serial?: string;
+      provider_channel?: number;
+      provider_verify_code?: string;
     }) =>
       request<Camera>("/cameras", {
         method: "POST",
         body: JSON.stringify(body),
       }),
+    update: (
+      id: string,
+      body: {
+        name?: string;
+        rtsp_url?: string;
+        onvif_ip?: string;
+        onvif_username?: string;
+        onvif_password?: string;
+        is_active?: boolean;
+        provider?: CameraProviderName;
+        provider_device_serial?: string;
+        provider_channel?: number;
+        provider_verify_code?: string;
+      },
+    ) =>
+      request<Camera>(`/cameras/${id}`, {
+        method: "PATCH",
+        body: JSON.stringify(body),
+      }),
+    stream: (id: string) => request<CameraStream>(`/cameras/${id}/stream`),
   },
   onvif: {
     discover: (simulate = false) =>

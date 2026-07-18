@@ -13,6 +13,7 @@ const badgeVariants = cva(
           "bg-[var(--color-muted)] text-[var(--color-muted-foreground)]",
         success: "bg-emerald-100 text-emerald-700",
         destructive: "bg-red-100 text-red-700",
+        info: "bg-sky-100 text-sky-700",
       },
     },
     defaultVariants: { variant: "default" },

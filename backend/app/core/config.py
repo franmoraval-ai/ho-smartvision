@@ -31,6 +31,21 @@ class Settings(BaseSettings):
     # --- Seguridad del Gateway Edge ---
     gateway_api_key: str = ""
 
+    # --- Cloud de fabricantes de cámaras (streaming sin gateway propio) ---
+    # Credenciales de operador de la Ezviz Open Platform (cubre Hikvision/Ezviz).
+    # Se obtienen una sola vez en https://open.ezviz.com (appKey/appSecret).
+    # Si faltan, el proveedor 'ezviz' queda deshabilitado (no rompe el arranque).
+    ezviz_app_key: str = ""
+    ezviz_app_secret: str = ""
+    # Host regional de la API (según la región de la cuenta de desarrollador).
+    ezviz_api_base: str = "https://open.ezvizlife.com"
+
+    # Credenciales de operador de la Imou Open Platform (cubre Imou/Dahua).
+    # Se obtienen en https://open.imoulife.com (appId/appSecret).
+    imou_app_id: str = ""
+    imou_app_secret: str = ""
+    imou_api_base: str = "https://openapi.easy4ip.com"
+
     # --- CORS (orígenes separados por coma) ---
     cors_origins: str = "http://localhost:3000"
 

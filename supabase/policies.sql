@@ -160,12 +160,14 @@ create policy app_users_owner_write on public.app_users
 -- segura `cameras_public` para que la app móvil consuma SOLO datos no sensibles.
 -- (El backend usa service_role y conserva acceso completo.)
 -- ----------------------------------------------------------------------------
-revoke select (onvif_username, onvif_password_encrypted, onvif_ip)
+revoke select (onvif_username, onvif_password_encrypted, onvif_ip,
+               provider_verify_code_encrypted)
   on public.cameras from authenticated;
 
 create or replace view public.cameras_public
 with (security_invoker = true) as
-  select id, property_id, gateway_id, name, rtsp_url, is_active, created_at
+  select id, property_id, gateway_id, name, rtsp_url, is_active, created_at,
+         provider, provider_device_serial, provider_channel
   from public.cameras;
 
 comment on view public.cameras_public is

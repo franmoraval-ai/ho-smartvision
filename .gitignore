@@ -40,3 +40,8 @@ Thumbs.db
 .idea/
 .vscode/*
 !.vscode/extensions.json
+.vercel
+.env*.local
+
+# Binario descargado del gateway (no versionar)
+gateway/cloudflared.exe

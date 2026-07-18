@@ -100,6 +100,12 @@ create table if not exists public.cameras (
   onvif_username             text,
   onvif_password_encrypted   text,                 -- Fernet token (no plaintext)
   is_active                  boolean not null default true,
+  -- Proveedor de streaming: local (gateway/go2rtc) o cloud/directo de fabricante.
+  provider                       text not null default 'local'
+                                 check (provider in ('local','ezviz','imou','reolink','tapo')),
+  provider_device_serial         text,             -- serie/UID en el cloud (Ezviz/Imou)
+  provider_channel               int  not null default 1,
+  provider_verify_code_encrypted text,             -- Fernet token (código de verificación)
   created_at                 timestamptz not null default now()
 );
 

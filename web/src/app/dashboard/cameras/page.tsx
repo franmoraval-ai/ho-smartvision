@@ -47,6 +47,13 @@ export default function CamerasPage() {
     return (id: string) => map.get(id) ?? "Sin propiedad";
   }, [properties]);
 
+  const providerLabel: Record<string, string> = {
+    ezviz: "EZVIZ Cloud",
+    imou: "Imou Cloud",
+    reolink: "Reolink",
+    tapo: "Tapo",
+  };
+
   return (
     <div className="mx-auto max-w-5xl">
       <header className="mb-6 flex items-center justify-between">
@@ -103,6 +110,11 @@ export default function CamerasPage() {
               <CardDescription>{propertyName(cam.property_id)}</CardDescription>
             </CardHeader>
             <CardContent className="flex flex-col gap-1 text-xs text-[var(--color-muted-foreground)]">
+              {cam.provider && cam.provider !== "local" && (
+                <Badge variant="info" className="w-fit">
+                  ☁ {providerLabel[cam.provider] ?? cam.provider}
+                </Badge>
+              )}
               {cam.onvif_ip && <p>ONVIF: {cam.onvif_ip}</p>}
               {cam.rtsp_url && (
                 <p className="truncate" title={cam.rtsp_url}>
@@ -110,11 +122,21 @@ export default function CamerasPage() {
                 </p>
               )}
               {cam.gateway_id && <p>Gateway vinculado</p>}
-              <Link href={`/dashboard/cameras/${cam.id}/live`} className="mt-3">
-                <Button variant="outline" size="sm" className="w-full">
-                  ▶ Ver en vivo
-                </Button>
-              </Link>
+              <div className="mt-3 flex gap-2">
+                <Link
+                  href={`/dashboard/cameras/${cam.id}/live`}
+                  className="flex-1"
+                >
+                  <Button variant="outline" size="sm" className="w-full">
+                    ▶ Ver en vivo
+                  </Button>
+                </Link>
+                <Link href={`/dashboard/cameras/${cam.id}/edit`}>
+                  <Button variant="outline" size="sm">
+                    ✎ Editar
+                  </Button>
+                </Link>
+              </div>
             </CardContent>
           </Card>
         ))}

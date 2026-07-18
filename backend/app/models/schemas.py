@@ -21,6 +21,16 @@ class StaffRole(str, Enum):
     technician = "technician"
 
 
+class CameraProvider(str, Enum):
+    """Origen del stream de una cámara."""
+
+    local = "local"      # go2rtc/RTSP a través del gateway (comportamiento previo)
+    ezviz = "ezviz"      # cloud Ezviz / Hikvision
+    imou = "imou"        # cloud Imou / Dahua
+    reolink = "reolink"  # acceso directo HTTP-FLV
+    tapo = "tapo"        # acceso directo RTSP
+
+
 # ---------------------------------------------------------------------------
 # Auth
 # ---------------------------------------------------------------------------
@@ -128,6 +138,10 @@ class CameraBase(BaseModel):
     onvif_ip: IPv4Address | None = None
     onvif_username: str | None = Field(default=None, max_length=120)
     is_active: bool = True
+    # --- Proveedor de streaming (cloud de fabricante o acceso directo) ---
+    provider: CameraProvider = CameraProvider.local
+    provider_device_serial: str | None = Field(default=None, max_length=120)
+    provider_channel: int = Field(default=1, ge=0, le=64)
 
 
 class CameraCreate(CameraBase):
@@ -135,6 +149,8 @@ class CameraCreate(CameraBase):
     gateway_id: UUID | None = None
     # Entrada en claro: se cifra antes de persistir.
     onvif_password: str | None = Field(default=None, max_length=200)
+    # Código de verificación/cifrado del dispositivo (Ezviz). Se cifra.
+    provider_verify_code: str | None = Field(default=None, max_length=200)
 
 
 class CameraUpdate(BaseModel):
@@ -145,6 +161,10 @@ class CameraUpdate(BaseModel):
     onvif_password: str | None = Field(default=None, max_length=200)
     gateway_id: UUID | None = None
     is_active: bool | None = None
+    provider: CameraProvider | None = None
+    provider_device_serial: str | None = Field(default=None, max_length=120)
+    provider_channel: int | None = Field(default=None, ge=0, le=64)
+    provider_verify_code: str | None = Field(default=None, max_length=200)
 
 
 class Camera(BaseModel):
@@ -158,7 +178,37 @@ class Camera(BaseModel):
     onvif_ip: str | None = None
     onvif_username: str | None = None
     is_active: bool
+    provider: CameraProvider = CameraProvider.local
+    provider_device_serial: str | None = None
+    provider_channel: int = 1
     created_at: datetime
+
+
+class CameraStream(BaseModel):
+    """URL de reproducción en vivo resuelta para una cámara."""
+    camera_id: UUID
+    provider: CameraProvider
+    url: str
+    protocol: str
+    cloud: bool
+    browser_playable: bool
+    expires_at: datetime | None = None
+
+
+class ProviderInfo(BaseModel):
+    """Metadatos de un proveedor de streaming disponible."""
+    name: str
+    cloud: bool
+    configured: bool
+
+
+class ProviderDeviceOut(BaseModel):
+    """Cámara vinculada a la cuenta de operador de un proveedor cloud."""
+    serial: str
+    name: str | None = None
+    online: bool | None = None
+    channels: int = 1
+    model: str | None = None
 
 
 # ---------------------------------------------------------------------------

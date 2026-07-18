@@ -46,4 +46,45 @@ class ApiClient {
       throw Exception(detail);
     }
   }
+
+  /// Resuelve la URL de reproducción en vivo de una cámara cloud/directo.
+  Future<CameraStream> getCameraStream(String cameraId) async {
+    final res = await http.get(
+      Uri.parse('${Env.backendUrl}/cameras/$cameraId/stream'),
+      headers: _headers,
+    );
+    if (res.statusCode >= 400) {
+      String detail = 'Error ${res.statusCode}';
+      try {
+        detail = (jsonDecode(res.body)['detail'] ?? detail).toString();
+      } catch (_) {}
+      throw Exception(detail);
+    }
+    return CameraStream.fromMap(jsonDecode(res.body) as Map<String, dynamic>);
+  }
+}
+
+/// URL de reproducción en vivo devuelta por el backend.
+class CameraStream {
+  final String url;
+  final String protocol; // hls | flv | rtmp | rtsp
+  final String provider;
+  final bool cloud;
+  final bool browserPlayable;
+
+  const CameraStream({
+    required this.url,
+    required this.protocol,
+    required this.provider,
+    required this.cloud,
+    required this.browserPlayable,
+  });
+
+  factory CameraStream.fromMap(Map<String, dynamic> map) => CameraStream(
+        url: map['url'] as String,
+        protocol: map['protocol'] as String,
+        provider: map['provider'] as String,
+        cloud: (map['cloud'] as bool?) ?? false,
+        browserPlayable: (map['browser_playable'] as bool?) ?? false,
+      );
 }

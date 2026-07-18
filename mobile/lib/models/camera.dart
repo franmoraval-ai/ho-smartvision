@@ -6,6 +6,9 @@ class Camera {
   final String name;
   final String? rtspUrl;
   final bool isActive;
+  final String provider;
+  final String? providerDeviceSerial;
+  final int providerChannel;
 
   const Camera({
     required this.id,
@@ -14,7 +17,12 @@ class Camera {
     required this.isActive,
     this.gatewayId,
     this.rtspUrl,
+    this.provider = 'local',
+    this.providerDeviceSerial,
+    this.providerChannel = 1,
   });
+
+  bool get isCloud => provider != 'local';
 
   factory Camera.fromMap(Map<String, dynamic> map) => Camera(
         id: map['id'] as String,
@@ -23,5 +31,8 @@ class Camera {
         name: map['name'] as String,
         rtspUrl: map['rtsp_url'] as String?,
         isActive: (map['is_active'] as bool?) ?? false,
+        provider: (map['provider'] as String?) ?? 'local',
+        providerDeviceSerial: map['provider_device_serial'] as String?,
+        providerChannel: (map['provider_channel'] as int?) ?? 1,
       );
 }
